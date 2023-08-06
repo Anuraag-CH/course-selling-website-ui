@@ -2,8 +2,12 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
+import { useState } from "react";
 
 function Signup() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <>
       <div
@@ -20,6 +24,9 @@ function Signup() {
             label="Email"
             variant="outlined"
             fullWidth={true}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
           />
           <br />
           <br />
@@ -28,10 +35,30 @@ function Signup() {
             label="Password"
             type="password"
             fullWidth={true}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
           />
           <br />
           <br />
-          <Button variant="contained">Signup</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              fetch("http://localhost:3000/admin/signup", {
+                method: "POST",
+                body: JSON.stringify({ username, password }),
+                headers: {
+                  "Content-type": "application/json",
+                },
+              }).then((res) => {
+                res.json().then((data) => {
+                  localStorage.setItem("token", data.token);
+                });
+              });
+            }}
+          >
+            Signup
+          </Button>
         </Card>
       </div>
     </>

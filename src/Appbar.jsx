@@ -1,25 +1,78 @@
-import { Button, Typography } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Appbar() {
+export default function Header() {
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3000/admin/me", {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUsername(data.username);
+        setLoggedIn(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching username:", error);
+        setLoggedIn(false);
+      });
+  }, []);
+
+  const handlesignin = () => {
+    navigate("/signin");
+  };
+
+  const handleSignup = () => {
+    navigate("/signup");
+  };
+
+  const handlesignout = () => {
+    // Perform signout logic here
+    localStorage.setItem("token", null);
+    setLoggedIn(false);
+    setUsername("");
+  };
+
   return (
-    <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography>Website</Typography>
-        <div style={{ display: "flex" }}>
-          <div style={{ marginRight: 10 }}>
-            <Button variant="contained" onClick={() => navigate("/signup")}>
-              Signup
-            </Button>
-          </div>
-          <Button variant="contained" onClick={() => navigate("/signin")}>
-            Signin
-          </Button>
-        </div>
-      </div>
-    </>
+    <Box>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="h6" sx={{ flexGrow: 1 }}>
+            Coursera{" "}
+          </Typography>
+          {loggedIn ? (
+            <>
+              <Typography
+                variant="subtitle1"
+                component="span"
+                sx={{ marginRight: "1rem" }}
+              >
+                {" "}
+                {username}{" "}
+              </Typography>
+              <Button color="inherit" onClick={handlesignout}>
+                {" "}
+                signout{" "}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" onClick={handlesignin}>
+                {" "}
+                signin{" "}
+              </Button>
+              <Button color="inherit" onClick={handleSignup}>
+                {" "}
+                Signup{" "}
+              </Button>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
-
-export default Appbar;

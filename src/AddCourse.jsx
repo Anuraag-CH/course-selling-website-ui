@@ -6,6 +6,7 @@ import { useState } from "react";
 function AddCourse() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [imagelink, setImageLink] = useState("");
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -31,12 +32,26 @@ function AddCourse() {
         />
         <br />
         <br />
+        <TextField
+          label="Image link"
+          fullWidth={true}
+          onChange={(e) => {
+            setImageLink(e.target.value);
+          }}
+        />
+        <br />
+        <br />
         <Button
           variant="contained"
           onClick={() => {
             fetch("http://localhost:3000/admin/courses", {
               method: "POST",
-              body: JSON.stringify({ title, description, published: true }),
+              body: JSON.stringify({
+                title,
+                description,
+                published: true,
+                imageLink: imagelink,
+              }),
               headers: {
                 "Content-type": "application/json",
                 Authorization: "Bearer " + localStorage.getItem("token"), // Replace "token" with the actual key used for the token in localStorage

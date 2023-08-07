@@ -4,17 +4,24 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { TextField } from "@mui/material";
 import Card from "@mui/material/Card";
+import axios from "axios";
 
 function Course() {
   let { courseId } = useParams();
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/admin/courses", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((response) => response.json())
-      .then((data) => setCourses(data.courses));
+    const url = "http://localhost:3000/admin/courses";
+
+    axios
+      .get(url, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+      .then((response) => response.data)
+      .then((data) => setCourses(data.courses))
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+      });
   }, []);
 
   let course = null;

@@ -1,6 +1,7 @@
 import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -8,10 +9,15 @@ export default function Header() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/admin/me", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((response) => response.json())
+    // Define the URL for the API endpoint
+    const url = "http://localhost:3000/admin/me";
+
+    // Make the Axios request within the useEffect hook
+    axios
+      .get(url, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+      .then((response) => response.data)
       .then((data) => {
         setUsername(data.username);
         setLoggedIn(true);

@@ -2,16 +2,24 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Card, Typography } from "@mui/material";
+import axios from "axios";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/admin/courses", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((response) => response.json())
-      .then((data) => setCourses(data.courses));
+    const url = "http://localhost:3000/admin/courses";
+
+    axios
+      .get(url, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+      .then((response) => {
+        setCourses(response.data.courses);
+      })
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+      });
   }, []);
 
   return (

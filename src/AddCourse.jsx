@@ -8,11 +8,16 @@ function AddCourse() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imagelink, setImageLink] = useState("");
+  const [price, setPrice] = useState(0);
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <Card variant="outlined" style={{ width: 350, padding: 10 }}>
+      <Card
+        variant="outlined"
+        style={{ width: 350, padding: 10, marginTop: "10vh", height: "100%" }}
+      >
         <TextField
+          style={{ marginBottom: 10 }}
           id="filled-basic"
           label="Title"
           variant="outlined"
@@ -21,9 +26,8 @@ function AddCourse() {
             setTitle(e.target.value);
           }}
         />
-        <br />
-        <br />
         <TextField
+          style={{ marginBottom: 10 }}
           id="outlined-password-input"
           label="Description"
           fullWidth={true}
@@ -31,17 +35,23 @@ function AddCourse() {
             setDescription(e.target.value);
           }}
         />
-        <br />
-        <br />
         <TextField
+          style={{ marginBottom: 10 }}
           label="Image link"
           fullWidth={true}
           onChange={(e) => {
             setImageLink(e.target.value);
           }}
         />
-        <br />
-        <br />
+        <TextField
+          style={{ marginBottom: 10 }}
+          onChange={(e) => {
+            setPrice(e.target.value);
+          }}
+          fullWidth={true}
+          label="Price"
+          variant="outlined"
+        />
         <Button
           variant="contained"
           onClick={async () => {
@@ -52,6 +62,7 @@ function AddCourse() {
                 description,
                 imagelink,
                 published: true,
+                price,
               },
               {
                 headers: {

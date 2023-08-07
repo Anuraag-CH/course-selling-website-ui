@@ -1,40 +1,79 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
+import { Card, Typography } from "@mui/material";
+import { useState } from "react";
+import axios from "axios";
 
 function Signin() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
-    <>
+    <div>
       <div
-        style={{ display: "flex", justifyContent: "center", marginTop: 125 }}
+        style={{
+          paddingTop: 150,
+          marginBottom: 10,
+          display: "flex",
+          justifyContent: "center",
+        }}
       >
-        <Typography variant="h6" gutterBottom>
-          Welocme to my website.Signin Below
+        <Typography variant={"h6"}>
+          Welcome to Coursera. Sign up below
         </Typography>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <Card variant="outlined" style={{ width: 350, padding: 10 }}>
+        <Card varint={"outlined"} style={{ width: 400, padding: 20 }}>
           <TextField
-            id="filled-basic"
-            label="Email"
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+            fullWidth={true}
+            label="Username"
             variant="outlined"
-            fullWidth={true}
           />
           <br />
           <br />
           <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             fullWidth={true}
+            label="Password"
+            variant="outlined"
+            type={"password"}
           />
           <br />
           <br />
-          <Button variant="contained">Signin</Button>
+
+          <Button
+            size={"large"}
+            variant="contained"
+            onClick={async () => {
+              const res = await axios.post(
+                "http://localhost:3000/admin/login",
+                {},
+                {
+                  headers: {
+                    "Content-type": "application/json",
+                    username: username,
+                    password: password,
+                  },
+                }
+              );
+              const data = res.data;
+              console.log(data);
+
+              localStorage.setItem("token", data.token);
+              window.location = "/courses";
+            }}
+          >
+            {" "}
+            Signin
+          </Button>
         </Card>
       </div>
-    </>
+    </div>
   );
 }
 

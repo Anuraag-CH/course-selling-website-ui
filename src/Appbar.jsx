@@ -1,84 +1,118 @@
-import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
+import { Typography } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-export default function Header() {
+function Appbar() {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState(null);
 
   useEffect(() => {
-    // Define the URL for the API endpoint
-    const url = "http://localhost:3000/admin/me";
+    function callback2(data) {
+      if (data.username) {
+        setUserName(data.username);
+      }
+    }
+    function callback1(res) {
+      res.json().then(callback2);
+    }
 
-    // Make the Axios request within the useEffect hook
-    axios
-      .get(url, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      })
-      .then((response) => response.data)
-      .then((data) => {
-        setUsername(data.username);
-        setLoggedIn(true);
-      })
-      .catch((error) => {
-        console.error("Error fetching username:", error);
-        setLoggedIn(false);
-      });
+    fetch("http://localhost:3000/admin/me", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    }).then(callback1);
   }, []);
 
-  const handlesignin = () => {
-    navigate("/signin");
-  };
+  if (userName) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: 4,
+          zIndex: 1,
+        }}
+      >
+        <div style={{ marginLeft: 10 }}>
+          <Typography variant={"h6"}>Coursera</Typography>
+        </div>
 
-  const handleSignup = () => {
-    navigate("/signup");
-  };
-
-  const handlesignout = () => {
-    // Perform signout logic here
-    localStorage.setItem("token", null);
-    setLoggedIn(false);
-    setUsername("");
-  };
-
-  return (
-    <Box>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="h6" sx={{ flexGrow: 1 }}>
-            Coursera{" "}
-          </Typography>
-          {loggedIn ? (
-            <>
-              <Typography
-                variant="subtitle1"
-                component="span"
-                sx={{ marginRight: "1rem" }}
+        <div style={{ display: "flex" }}>
+          <div style={{ marginRight: 10, display: "flex" }}>
+            <div style={{ marginRight: 10 }}>
+              <Button
+                onClick={() => {
+                  navigate("/addcourse");
+                }}
               >
-                {" "}
-                {username}{" "}
-              </Typography>
-              <Button color="inherit" onClick={handlesignout}>
-                {" "}
-                signout{" "}
+                Add course
               </Button>
-            </>
-          ) : (
-            <>
-              <Button color="inherit" onClick={handlesignin}>
-                {" "}
-                signin{" "}
+            </div>
+
+            <div style={{ marginRight: 10 }}>
+              <Button
+                onClick={() => {
+                  navigate("/courses");
+                }}
+              >
+                Courses
               </Button>
-              <Button color="inherit" onClick={handleSignup}>
-                {" "}
-                Signup{" "}
-              </Button>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
+            </div>
+
+            <Button
+              variant={"contained"}
+              onClick={() => {
+                localStorage.setItem("token", null);
+                window.location = "/";
+              }}
+            >
+              signout
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: 4,
+          zIndex: 1,
+        }}
+      >
+        <div style={{ marginLeft: 10 }}>
+          <Typography variant={"h6"}>Coursera</Typography>
+        </div>
+
+        <div style={{ display: "flex" }}>
+          <div style={{ marginRight: 10 }}>
+            <Button
+              variant={"contained"}
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              Signup
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant={"contained"}
+              onClick={() => {
+                navigate("/signin");
+              }}
+            >
+              Signin
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
+
+export default Appbar;

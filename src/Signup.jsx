@@ -4,10 +4,12 @@ import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   return (
     <>
@@ -22,7 +24,7 @@ function Signup() {
         <Card variant="outlined" style={{ width: 350, padding: 10 }}>
           <TextField
             id="filled-basic"
-            label="Email"
+            label="Username"
             variant="outlined"
             fullWidth={true}
             onChange={(e) => {
@@ -55,6 +57,7 @@ function Signup() {
                 }
               );
               localStorage.setItem("token", response.data.token);
+              navigate("/courses");
             }}
           >
             Signup
